@@ -2,3 +2,5 @@ src/git_info.h
 .pio/
 .vscode/
 build/
+.cache/
+compile_commands.json

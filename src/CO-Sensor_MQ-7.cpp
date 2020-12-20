@@ -9,7 +9,8 @@
 #include "CO-Sensor_MQ-7.h"
 
 bool ota_flag = false;
-Led led(ONBOARDLED_PIN);
+Led led(PIN_ONBOARDLED);
+TaskHandle_t xHandle_do_wifi;
 
 /**
  * @brief arduino setup
@@ -20,31 +21,21 @@ void setup()
 {
     const char *logtag = "setup";
     esp_log_level_set("*", ESP_LOG_DEBUG);
-
     Serial.begin(115200);
 
     ESP_LOGI(logtag, "*******************************************");
     ESP_LOGI(logtag, "Hello, this is CO-Sensor_MQ-7.");
     ESP_LOGI(logtag, "Firmware version: %s", GIT_TAG);
     ESP_LOGI(logtag, "*******************************************");
-
-    // ESP_LOGD(logtag, "Read OTA flag");
-    // ESP_LOGD(logtag, "OTA flag: %i", ota_flag);
-    if (ota_flag)
-    {
-    //     ESP_LOGI(logtag, "Entering OTA mode");
-    //     ESP_LOGI(logtag, "Setting OTA flag to 0");
-    //     init_ota(OTA_WIFI_SSID, OTA_WIWI_PASSWORD);
-    }
-    else
-    {
-        ESP_LOGD(logtag, "Entering normal mode, starting init...");
-        pinMode(12, INPUT);
-        pinMode(14, INPUT);
-        //blink for telling that setup is done
-        ESP_LOGD(logtag, "Init finished: blink LED");
-        led.blinks();
-    }
+    init_wifi();
+    ESP_LOGD(logtag, "Init pins %i and %i as inputs", PIN_ANALOG_INPUT, PIN_DIGITAL_INPUT);
+    pinMode(PIN_ANALOG_INPUT, INPUT);
+    pinMode(PIN_DIGITAL_INPUT, INPUT);
+    ESP_LOGD(logtag, "Start tasks");
+    create_tasks();
+    //blink for telling that setup is done
+    ESP_LOGD(logtag, "Init finished: blink LED");
+    led.blinks();
 }
 
 /**
@@ -63,7 +54,19 @@ void loop()
     else
         vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    sensorValue = analogRead(12);
-    sensorValue_digital = digitalRead(14);
+    sensorValue = analogRead(PIN_ANALOG_INPUT);
+    sensorValue_digital = digitalRead(PIN_DIGITAL_INPUT);
     ESP_LOGI(logtag, "sensor value: %i, %i", sensorValue, sensorValue_digital);
+}
+
+void create_tasks()
+{
+    xTaskCreate(
+        do_wifi,            /* Task function. */
+        "do_wifi",          /* name of task. */
+        2048,               /* Stack size of task */
+        NULL,               /* parameter of the task */
+        1,                  /* priority of the task */
+        &xHandle_do_wifi    /* Task handle to keep track of created task */
+    );
 }

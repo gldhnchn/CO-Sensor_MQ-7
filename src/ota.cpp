@@ -1,6 +1,6 @@
 #include "ota.h"
 
-const char *logtag = "ota";
+static const char *logtag = "ota";
 
 /**
  * @brief init ota
@@ -11,29 +11,6 @@ const char *logtag = "ota";
  */
 int init_ota(const char *ssid, const char *pw)
 {
-    ESP_LOGI(logtag, "Init OTA");
-    ESP_LOGD(logtag, "Set WiFi mode");
-    WiFi.mode(WIFI_STA);
-    ESP_LOGD(logtag, "Begin WiFi");
-    WiFi.begin(ssid, pw);
-    unsigned long old_time = millis();
-    unsigned long new_time = millis();
-    while (WiFi.waitForConnectResult() != WL_CONNECTED && new_time - old_time < TIME_WAITING_FOR_CONNECTION_IN_MS)
-    {
-        ESP_LOGD(lagtag, "Waiting for connection.");
-        new_time = millis();
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-    if (WiFi.waitForConnectResult() != WL_CONNECTED)
-    {
-        ESP_LOGE(lagtag, "Connection Failed!");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        ESP_LOGI(logtag, "Rebooting");
-        esp_restart();
-    }
-    else
-        ESP_LOGD(lagtag, "Connection established!");
-
     // Port defaults to 3232
     // ArduinoOTA.setPort(3232);
 
@@ -79,9 +56,6 @@ int init_ota(const char *ssid, const char *pw)
         });
     ESP_LOGD(logtag, "Begin OTA");
     ArduinoOTA.begin();
-
-    ESP_LOGI(logtag, "Ready");
-    ESP_LOGI(logtag, "IP address: %ui", WiFi.localIP());
     return 0;
 }
 
