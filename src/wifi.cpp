@@ -8,7 +8,7 @@ static const char *logtag = "wifi";
  */
 void handle_wifi(void *parameter)
 {
-    ESP_LOGD(logtag, "do wifi task started");
+    ESP_LOGD(logtag, "handle wifi task started");
     while(true)
     {
         vTaskDelay(portMAX_DELAY); /*wait as much as possible ... */

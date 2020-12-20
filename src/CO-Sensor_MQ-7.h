@@ -36,7 +36,8 @@
 
 /* global variables*/
 extern Led led;
-extern TaskHandle_t xHandle_do_wifi;
+extern TaskHandle_t xHandle_handle_wifi,
+                    xHandle_handle_ota;
 
 /* function declerations */
 void setup();

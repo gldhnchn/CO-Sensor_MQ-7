@@ -34,7 +34,7 @@ When you have installed PlatformIO on your computer, you can just use the provid
 `make upload` to download all dependencies, build the code, and upload it to your ESP-32 in one step.
 
 #### Over the air firmware update (OTA)
-More informations: https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/system/ota.html
+More information: https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/system/ota.html
 
 
 #### Debugging

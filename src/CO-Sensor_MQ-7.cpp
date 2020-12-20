@@ -10,7 +10,8 @@
 
 bool ota_flag = false;
 Led led(PIN_ONBOARDLED);
-TaskHandle_t xHandle_do_wifi;
+TaskHandle_t    xHandle_handle_wifi,
+                xHandle_handle_ota;
 
 /**
  * @brief arduino setup
@@ -28,10 +29,10 @@ void setup()
     ESP_LOGI(logtag, "Firmware version: %s", GIT_TAG);
     ESP_LOGI(logtag, "*******************************************");
     init_wifi();
+    init_ota();
     ESP_LOGD(logtag, "Init pins %i and %i as inputs", PIN_ANALOG_INPUT, PIN_DIGITAL_INPUT);
     pinMode(PIN_ANALOG_INPUT, INPUT);
     pinMode(PIN_DIGITAL_INPUT, INPUT);
-    ESP_LOGD(logtag, "Start tasks");
     create_tasks();
     //blink for telling that setup is done
     ESP_LOGD(logtag, "Init finished: blink LED");
@@ -40,20 +41,14 @@ void setup()
 
 /**
  * @brief arduino loop
- * This is the arduino loop function. It is not used, instead RTOS tasks are used.
- * That's why the loop task is delayed max. When OTA flag is set to active during boot, this loop is used for handling OTA.
- * 
+ * This is the arduino loop function.
  */
 int sensorValue = 0;
 int sensorValue_digital = 0;
 
 void loop()
 {
-    if (ota_flag)
-        handle_ota();
-    else
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
     sensorValue = analogRead(PIN_ANALOG_INPUT);
     sensorValue_digital = digitalRead(PIN_DIGITAL_INPUT);
     ESP_LOGI(logtag, "sensor value: %i, %i", sensorValue, sensorValue_digital);
@@ -61,12 +56,24 @@ void loop()
 
 void create_tasks()
 {
+    ESP_LOGD(logtag, "Start tasks");
     xTaskCreate(
-        do_wifi,            /* Task function. */
-        "do_wifi",          /* name of task. */
-        2048,               /* Stack size of task */
-        NULL,               /* parameter of the task */
-        1,                  /* priority of the task */
-        &xHandle_do_wifi    /* Task handle to keep track of created task */
+        handle_wifi,            /* Task function. */
+        "handle_wifi",          /* name of task. */
+        2048,                   /* Stack size of task */
+        NULL,                   /* parameter of the task */
+        1,                      /* priority of the task */
+        &xHandle_handle_wifi    /* Task handle to keep track of created task */
     );
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    xTaskCreate(
+        handle_ota,             /* Task function. */
+        "handle_ota",           /* name of task. */
+        2048,                   /* Stack size of task */
+        NULL,                   /* parameter of the task */
+        1,                      /* priority of the task */
+        &xHandle_handle_ota     /* Task handle to keep track of created task */
+    );
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    ESP_LOGD(logtag, "All tasks started");
 }

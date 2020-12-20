@@ -6,4 +6,4 @@
 
 void do_wifi(void *parameter);
 void init_wifi();
-void handle_wifi();
+void handle_wifi(void *parameter);

@@ -4,13 +4,11 @@ static const char *logtag = "ota";
 
 /**
  * @brief init ota
- * call once
- * @param ssid 
- * @param pw 
  * @return int 1 error, 0 success
  */
-int init_ota(const char *ssid, const char *pw)
+int init_ota()
 {
+    ESP_LOGD(logtag, "Init OTA");
     // Port defaults to 3232
     // ArduinoOTA.setPort(3232);
 
@@ -61,9 +59,13 @@ int init_ota(const char *ssid, const char *pw)
 
 /**
  * @brief handle ota
- * call in loop 
  */
-void handle_ota()
+void handle_ota(void *parameter)
 {
-    ArduinoOTA.handle();
+    ESP_LOGD(logtag, "handle ota task started");
+    while(true)
+    {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        ArduinoOTA.handle();
+    }
 }
