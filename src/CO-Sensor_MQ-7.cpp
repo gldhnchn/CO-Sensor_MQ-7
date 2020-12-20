@@ -40,6 +40,7 @@ void setup()
     {
         ESP_LOGD(logtag, "Entering normal mode, starting init...");
         pinMode(12, INPUT);
+        pinMode(14, INPUT);
         //blink for telling that setup is done
         ESP_LOGD(logtag, "Init finished: blink LED");
         led.blinks();
@@ -53,6 +54,7 @@ void setup()
  * 
  */
 int sensorValue = 0;
+int sensorValue_digital = 0;
 
 void loop()
 {
@@ -62,5 +64,6 @@ void loop()
         vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     sensorValue = analogRead(12);
-    ESP_LOGI(logtag, "sensor value: %i", sensorValue);
+    sensorValue_digital = digitalRead(14);
+    ESP_LOGI(logtag, "sensor value: %i, %i", sensorValue, sensorValue_digital);
 }
