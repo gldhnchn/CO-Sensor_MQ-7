@@ -10,13 +10,14 @@
 
 /* ++++++ */
 /* config */
+#include <string>
 #define PIN_ONBOARDLED 2
 #define PIN_ANALOG_INPUT 35
 #define PIN_DIGITAL_INPUT 34
 
 /* OTA */
-#define OTA_WIFI_SSID "wlanssid"
-#define OTA_WIWI_PASSWORD "wlanpassword"
+#define WIFI_SSID "wlanssid"
+#define WIFI_PASSWORD "wlanpassword"
 #define WIFI_HOSTNAME "ESP32_MQ_7_CO_Sensor"
 
 /* ++++++++ */
@@ -26,6 +27,8 @@
 #include "ota.h"
 #include "misc.h"
 #include "wifi.h"
+#include "time.h"
+#include <string>
 
 /* git version */
 #if __has_include("git_info.h")
@@ -38,6 +41,7 @@
 extern Led led;
 extern TaskHandle_t xHandle_handle_wifi,
                     xHandle_handle_ota;
+extern std::string  sensor_value_msg;
 
 /* function declerations */
 void setup();

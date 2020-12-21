@@ -12,6 +12,13 @@ bool ota_flag = false;
 Led led(PIN_ONBOARDLED);
 TaskHandle_t    xHandle_handle_wifi,
                 xHandle_handle_ota;
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 3600;
+const int   daylightOffset_sec = 3600;
+std::string  sensor_value_msg;
+int sensorValue = 0;
+int sensorValue_digital = 0;
+struct tm timeinfo;
 
 /**
  * @brief arduino setup
@@ -33,6 +40,7 @@ void setup()
     ESP_LOGD(logtag, "Init pins %i and %i as inputs", PIN_ANALOG_INPUT, PIN_DIGITAL_INPUT);
     pinMode(PIN_ANALOG_INPUT, INPUT);
     pinMode(PIN_DIGITAL_INPUT, INPUT);
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     create_tasks();
     //blink for telling that setup is done
     ESP_LOGD(logtag, "Init finished: blink LED");
@@ -43,15 +51,19 @@ void setup()
  * @brief arduino loop
  * This is the arduino loop function.
  */
-int sensorValue = 0;
-int sensorValue_digital = 0;
-
 void loop()
 {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     sensorValue = analogRead(PIN_ANALOG_INPUT);
     sensorValue_digital = digitalRead(PIN_DIGITAL_INPUT);
-    ESP_LOGI(logtag, "sensor value: %i, %i", sensorValue, sensorValue_digital);
+    getLocalTime(&timeinfo);
+    char buf[sizeof("2020-12-21T18:30:54+0100")];
+    strftime(buf, sizeof(buf), "%FT%T%z", &timeinfo);
+    std::string timeStr(buf),
+                sensorValueStr(String(sensorValue).c_str()),
+                sensorValue_digitalStr(String(sensorValue_digital).c_str());
+    sensor_value_msg = timeStr + ", " + sensorValueStr + ", " + sensorValue_digitalStr;
+    ESP_LOGV(sensor_value_msg.c_str());
 }
 
 void create_tasks()
