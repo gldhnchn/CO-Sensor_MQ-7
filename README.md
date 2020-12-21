@@ -1,4 +1,5 @@
 # CO-Sensor with ESP32 and MQ-7
+Using: nc 192.168.1.188 42000
 
 ## Developing
 There are a lot of options for writing code for the esp32 and for flashing it e.g. Arduino IDE, VScode with Arduino extention, PlattformIO. All possibilities to develop with the esp32 are listed and described [here](https://github.com/espressif/arduino-esp32/).
@@ -27,7 +28,7 @@ Your arduino.json could look like this
 ```
 
 ### PlatformIO - VScode
-All necessery informations are already provided in platformio.ini. When your esp32 is connected via USB you can simply press upload.
+All necessary information are already provided in platformio.ini. When your esp32 is connected via USB you can simply press upload.
 
 ### PlatformIO - CLI
 When you have installed PlatformIO on your computer, you can just use the provided Makefile in this repository and run

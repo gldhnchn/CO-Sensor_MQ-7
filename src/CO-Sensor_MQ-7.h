@@ -1,5 +1,5 @@
 /**
- * @file COSensor_MQ7.h
+ * @file CO-Sensor_MQ-7.h
  * @author gldhnchn (gldhnchn@posteo.de)
  * @brief main file
  * @date 2020-12-16
@@ -19,6 +19,7 @@
 #define WIFI_SSID "wlanssid"
 #define WIFI_PASSWORD "wlanpassword"
 #define WIFI_HOSTNAME "ESP32_MQ_7_CO_Sensor"
+#define WIFI_PORT 42000
 
 /* ++++++++ */
 /* includes */

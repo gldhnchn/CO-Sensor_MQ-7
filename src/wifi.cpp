@@ -1,6 +1,6 @@
 #include "wifi.h"
 
-WiFiServer server(42000);
+WiFiServer server(WIFI_PORT);
 static const char *logtag = "wifi";
 
 /**
